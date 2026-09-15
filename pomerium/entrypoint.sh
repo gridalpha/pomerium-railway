@@ -90,6 +90,12 @@ render_routes() {
   : "${UPSTREAM_URL:=http://verify.railway.internal:8000}"
   {
     printf '# rendered by entrypoint.sh - edit the variables, not this file\n'
+    # Upstreams that do header-based SSO read these instead of verifying the JWT
+    # themselves. Pomerium strips any client-supplied X-Pomerium-* header first.
+    printf 'jwt_claims_headers:\n'
+    printf '  X-Pomerium-Claim-Email: email\n'
+    printf '  X-Pomerium-Claim-User: sub\n'
+    printf '  X-Pomerium-Claim-Groups: groups\n'
     printf 'routes:\n'
     local i url_var prefix_var url prefix
     for i in 2 3 4 5; do
